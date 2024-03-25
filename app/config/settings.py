@@ -16,8 +16,7 @@ import environ
 
 env = environ.Env(
     DEBUG=(bool, False),
-    ALLOWED_HOSTS=["*"],
-    DATABASE_URL=(str, 'sqlite:////sqlite.db'),
+    DATABASE_URL=(str, 'sqlite:///sqlite.db'),
 )
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -47,6 +46,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'drf_yasg',
     'rest_framework',
     'apps.transaction',
 ]
