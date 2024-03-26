@@ -346,6 +346,17 @@ files = [
 ]
 
 [[package]]
+name = "uuid"
+version = "1.30"
+description = "UUID object and generation functions (Python 2.3 or higher)"
+category = "main"
+optional = false
+python-versions = "*"
+files = [
+    {file = "uuid-1.30.tar.gz", hash = "sha256:1f87cc004ac5120466f36c5beae48b4c48cc411968eed0eaecd3da82aa96193f"},
+]
+
+[[package]]
 name = "whitenoise"
 version = "6.6.0"
 description = "Radically simplified static file serving for WSGI applications"
@@ -363,4 +374,4 @@ brotli = ["Brotli"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "35bb41c73a5c030cb937e11d362a251ce927f436b3c2e150d95fc2c5afb0579b"
+content-hash = "7bcac4e3457c5fc3d8eda61cd17dae56f8d1fcd25870dcd019fd475ba568f2c3"
