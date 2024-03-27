@@ -135,3 +135,29 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# MQTT settigns
+
+MQTT_ADDRESS = env('MQTT_ADDRESS')
+MQTT_USERNAME = env('MQTT_USERNAME')
+MQTT_PASSWORD = env('MQTT_PASSWORD')
+MQTT_PORT = env('MQTT_PORT', default=1883)
+CLIENT_ID = env('CLIENT_ID')
+
+# Celery and RabbitMQ Config
+RABBITMQ = {
+    "PROTOCOL": "amqp",
+    "HOST": env("RABBITMQ_HOST"),
+    "PORT": env("RABBITMQ_PORT_1", default=5672),
+    "USER": env("RABBITMQ_USER"),
+    "PASSWORD": env("RABBITMQ_PASSWORD"),
+}
+
+# Celery settings
+CELERY_ENABLED = True
+CELERY_BROKER_URL = f"{RABBITMQ['PROTOCOL']}://{RABBITMQ['USER']}:" \
+                    f"{RABBITMQ['PASSWORD']}@{RABBITMQ['HOST']}:{RABBITMQ['PORT']}//"
+
+CELERY_ACCEPT_CONTENT = ['application/json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
