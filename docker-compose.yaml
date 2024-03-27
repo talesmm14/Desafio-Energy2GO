@@ -1,6 +1,19 @@
 version: "3.7"
 
 services:
+  app:
+    build: ./app
+    command: sh -c "python manage.py migrate && gunicorn config.wsgi:application -w 2 -b :8000"
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./app:/app
+    depends_on:
+      - rabbitmq
+    env_file:
+      - ./app/.env
+    networks:
+      - mqtt
   mosquitto:
     image: eclipse-mosquitto
     hostname: mosquitto
@@ -11,3 +24,48 @@ services:
     volumes:
       - ./mosquitto:/etc/mosquitto
       - ./mosquitto/mosquitto.conf:/mosquitto/config/mosquitto.conf
+    networks:
+      - mqtt
+  equipamento:
+    build: ./equipamento/
+    command:
+      - ./equipamento
+    volumes:
+      - ./equipamento:/app
+    networks:
+      - mqtt
+    environment:
+      - MQTT_ADDRESS=mosquitto
+      - MQTT_USERNAME=teste
+      - MQTT_PASSWORD=teste
+  rabbitmq:
+    image: rabbitmq:3.8-management-alpine
+    ports:
+      - "${RABBITMQ_PORT_1}:5672"
+      - "${RABBITMQ_PORT_2}:15672"
+    environment:
+      - "RABBITMQ_DEFAULT_USER=${RABBITMQ_USER}"
+      - "RABBITMQ_DEFAULT_PASS=${RABBITMQ_PASSWORD}"
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq/
+    networks:
+      - mqtt
+    env_file:
+      - ./app/.env
+  celery:
+    build: ./app
+    command: "python -m celery -A config worker -l info --loglevel=info"
+    volumes:
+      - ./app:/app
+    depends_on:
+      - rabbitmq
+    env_file:
+      - ./app/.env
+    networks:
+      - mqtt
+
+volumes:
+  rabbitmq_data:
+
+networks:
+  mqtt:
