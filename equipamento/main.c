@@ -1,11 +1,13 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <regex.h>
+#include <time.h>
 #include <MQTTClient.h>
-#define MQTT_ADDRESS   getenv("MQTT_ADDRESS")
-#define CLIENTID       "MQTTCClientID"
-#define MQTT_PUBLISH_TOPIC     "MQTTCClientPubTopic"
-#define MQTT_SUBSCRIBE_TOPIC   "MQTTCClientSubTopic"
+#define MQTT_ADDRESS getenv("MQTT_ADDRESS")
+#define CLIENTID "MQTTCClientID"
+#define EQUIPMENT_VALIDATION_TOPIC "EQUIPMENT/VALIDATION"
+#define EQUIPMENT_VALIDATION_RESPONSE_TOPIC "EQUIPMENT/VALIDATION/RESPONSE"
 #define MQTT_USERNAME getenv("MQTT_USERNAME")
 #define MQTT_PASSWORD getenv("MQTT_PASSWORD")
 
@@ -29,11 +31,22 @@ void publish(MQTTClient client, char *topic, char *payload) {
 
 int on_message(void *context, char *topicName, int topicLen, MQTTClient_message *message) {
     char *payload = message->payload;
-    printf("Mensagem recebida! \n\rTopico: %s Mensagem: %s\n", topicName, payload);
-    fflush(stdout);
-    publish(client, MQTT_PUBLISH_TOPIC, payload);
-    MQTTClient_freeMessage(&message);
-    MQTTClient_free(topicName);
+    int id;
+    char response[100];
+    if (sscanf(payload, "transaction {%d}", &id) == 1) {
+        srand(time(NULL));
+        if (((rand() % (10 - 1 + 1)) + 1) >= 5){
+            sprintf(response, "confirm transaction {%d}\n", id);
+        } else {
+            sprintf(response, "error transaction {%d}\n", id);
+        }
+        printf("%s", response);
+        publish(client, EQUIPMENT_VALIDATION_RESPONSE_TOPIC, response);
+        MQTTClient_freeMessage(&message);
+        MQTTClient_free(topicName);
+        return 1;
+    }
+    fputs("Erro: não foi possível analisar a transação.\n", stderr);
     return 1;
 }
 
@@ -52,7 +65,7 @@ int main(int argc, char *argv[]) {
         exit(-1);
     }
 
-    MQTTClient_subscribe(client, MQTT_SUBSCRIBE_TOPIC, 0);
+    MQTTClient_subscribe(client, EQUIPMENT_VALIDATION_TOPIC, 0);
     while (1) {
     }
 }

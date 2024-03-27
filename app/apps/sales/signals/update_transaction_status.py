@@ -9,4 +9,4 @@ from apps.sales.models import Transaction
 def update_transaction_status(sender, instance, created, **kwargs):
     """ Pergunta ao equipamento via MQTT se a transação pode ser atualizada com valida. """
     if created:
-        mqtt.send_message('EQUIPMENT/VALIDATION', f'transaction {instance.pk}')
+        mqtt.send_message('EQUIPMENT/VALIDATION', f'transaction {{{instance.pk}}}')
