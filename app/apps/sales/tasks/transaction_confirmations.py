@@ -2,10 +2,10 @@ import re
 
 from apps.hardware.utils.mqtt import subscribe_topic
 from apps.sales.models import Transaction, StatusTransaction
-from config.celery import app
+from celery import shared_task
 
 
-@app.task(name='sales.tasks.transaction_confirmations')
+@shared_task()
 def transaction_confirmations() -> None:
     def on_message(client, userdata, message) -> None:
         msg = message.payload.decode()

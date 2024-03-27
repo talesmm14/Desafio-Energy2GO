@@ -8,10 +8,11 @@ services:
       - "8000:8000"
     volumes:
       - ./app:/app
+      - .env:/app/.env
     depends_on:
       - rabbitmq
     env_file:
-      - ./app/.env
+      - .env
     networks:
       - mqtt
   mosquitto:
@@ -34,6 +35,8 @@ services:
       - ./equipamento:/app
     networks:
       - mqtt
+    env_file:
+      - .env
     environment:
       - MQTT_ADDRESS=mosquitto
       - MQTT_USERNAME=teste
@@ -41,26 +44,24 @@ services:
   rabbitmq:
     image: rabbitmq:3.8-management-alpine
     ports:
-      - "${RABBITMQ_PORT_1}:5672"
-      - "${RABBITMQ_PORT_2}:15672"
-    environment:
-      - "RABBITMQ_DEFAULT_USER=${RABBITMQ_USER}"
-      - "RABBITMQ_DEFAULT_PASS=${RABBITMQ_PASSWORD}"
+      - "5672:5672"
+      - "15672:15672"
     volumes:
       - rabbitmq_data:/var/lib/rabbitmq/
     networks:
       - mqtt
     env_file:
-      - ./app/.env
+      - .env
   celery:
     build: ./app
     command: "python -m celery -A config worker -l info --loglevel=info"
     volumes:
       - ./app:/app
+      - .env:/app/.env
     depends_on:
       - rabbitmq
     env_file:
-      - ./app/.env
+      - .env
     networks:
       - mqtt
 

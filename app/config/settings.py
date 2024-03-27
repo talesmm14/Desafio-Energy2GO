@@ -23,7 +23,7 @@ env = environ.Env(
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Take environment variables from .env file
-environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
+environ.Env.read_env(os.path.join(BASE_DIR, '../.env'))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
@@ -142,15 +142,15 @@ MQTT_ADDRESS = env('MQTT_ADDRESS')
 MQTT_USERNAME = env('MQTT_USERNAME')
 MQTT_PASSWORD = env('MQTT_PASSWORD')
 MQTT_PORT = env('MQTT_PORT', default=1883)
-CLIENT_ID = env('CLIENT_ID')
+CLIENT_ID = env('CLIENT_ID', default='django-app')
 
 # Celery and RabbitMQ Config
 RABBITMQ = {
     "PROTOCOL": "amqp",
     "HOST": env("RABBITMQ_HOST"),
-    "PORT": env("RABBITMQ_PORT_1", default=5672),
-    "USER": env("RABBITMQ_USER"),
-    "PASSWORD": env("RABBITMQ_PASSWORD"),
+    "PORT": env("RABBITMQ_PORT", default=5672),
+    "USER": env("RABBITMQ_DEFAULT_USER"),
+    "PASSWORD": env("RABBITMQ_DEFAULT_PASS"),
 }
 
 # Celery settings

@@ -7,3 +7,5 @@ class SalesConfig(AppConfig):
 
     def ready(self):
         import apps.sales.signals
+        from apps.sales.tasks.transaction_confirmations import transaction_confirmations
+        transaction_confirmations.delay()
