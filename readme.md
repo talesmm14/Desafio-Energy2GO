@@ -3,7 +3,7 @@
 Para a posição de Desenvolvedor(a) Python Pleno
 
 O teste permitia o uso livre de qualquer ferramenta para resolver o problema, então utilizei as seguintes: Python, C,
-Django, Django Rest Framework, Celery, Docker, Docker Compose e PostgreSQL.
+Django, Django Rest Framework, Celery, Docker, Docker Compose.
 
 **Obs: A empresa parece utilizar o Bottle ou uma ferramenta similar. Pelo que eu vi na documentação, parece ser muito
 simples.**
